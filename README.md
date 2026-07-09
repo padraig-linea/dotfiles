@@ -30,6 +30,8 @@ Practically, this means:
 - `AppData/Local/nvim/` — Neovim config (not the plugin data itself — see below)
 - `AppData/Roaming/Code/User/settings.json` — VS Code settings
 - `.vscode/extensions.txt` — list of installed VS Code extension IDs
+- `winget-packages.json` — list of winget-installed software (like `pip freeze`, but for
+  winget — generated with `winget export`, restored with `winget import`)
 
 ## What's deliberately NOT tracked
 
@@ -83,10 +85,11 @@ typed by hand.
 Cloning this repo brings back your *settings*, not the *programs* themselves. After step 6,
 still do, separately:
 
-```bash
-winget install --id eza-community.eza -e
-winget install --id Neovim.Neovim -e
-```
+- Reinstall winget software: `winget import -i winget-packages.json --ignore-unavailable`
+  (add `--ignore-version-numbers` to grab latest versions instead of the exact ones
+  recorded — usually what you want, since old versions can fall out of the source over
+  time). Regenerate this file after installing something new with
+  `winget export -o winget-packages.json --accept-source-agreements`.
 - Install the CaskaydiaCove Nerd Font and set it as the Windows Terminal Git Bash profile's
   font — this part is machine-specific and has no shortcut (see the original
   `config-migration/terminal-setup.md` notes if you still have that folder around).
