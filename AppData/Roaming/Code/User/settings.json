@@ -1,0 +1,11 @@
+{
+    "workbench.colorTheme": "Light 2026",
+    "security.workspace.trust.untrustedFiles": "open",
+    "editor.lineNumbers": "relative",
+    "editor.cursorSurroundingLines": 10,
+    "editor.cursorSurroundingLinesStyle": "all",
+    "extensions.experimental.affinity": {
+        "asvetliakov.vscode-neovim": 1
+    },
+    "workbench.activityBar.location": "top"
+}
