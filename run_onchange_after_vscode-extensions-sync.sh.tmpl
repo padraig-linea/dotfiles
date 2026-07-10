@@ -1,0 +1,8 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/sh
+# Restores VS Code extensions. Re-runs automatically whenever
+# extensions.txt's content changes (this comment embeds its hash so
+# chezmoi detects the change):
+# extensions.txt sha256sum: {{ include "dot_vscode/extensions.txt" | sha256sum }}
+cat "$HOME/.vscode/extensions.txt" | xargs -L1 code --install-extension
+{{- end -}}
