@@ -96,24 +96,33 @@ alias df='df -h'
 alias du='du -h'
 
 # --- File tree ---
-# tree [dir] [-L depth]   colored, git-aware tree via eza (falls back to Windows tree.com)
+# tree [dir] [-L depth]   colored, git-aware tree via eza (falls back to ftree(), pure bash)
 if command -v eza >/dev/null 2>&1; then
     tree() { eza --tree --icons=auto --color=auto "$@"; }
 else
-    # native fallback only takes an optional dir; scan args for the first non-flag
-    # token (skipping -L/--level and its numeric value) regardless of position
+    # native fallback: delegate to ftree() below. Scan args for the first non-flag
+    # token (directory) and -L/--level's value (depth), regardless of position,
+    # then hand them to ftree in its own [dir] [depth] order.
     tree() {
-        local d="." found=0
+        local d="." depth="" found=0
         while [ $# -gt 0 ]; do
             case "$1" in
-                -L|--level) if [ $# -ge 2 ]; then shift 2; else shift; fi ;;
+                -L|--level) if [ $# -ge 2 ]; then depth="$2"; shift 2; else shift; fi ;;
                 -*) shift ;;
                 *) [ "$found" -eq 0 ] && d="$1"; found=1; shift ;;
             esac
         done
-        ( cd "$d" && cmd //c "tree /F /A"; )
+        ftree "$d" "$depth"
     }
 fi
 # ftree [dir] [depth]   pure-bash fallback with depth limit (default depth 2)
-ftree() { find "${1:-.}" -maxdepth "${2:-2}" 2>/dev/null \
-            | sed -e 's;[^/]*/;|__;g;s;__|; |;g'; }
+# cd's into dir first so indentation reflects depth within it, not the absolute
+# path leading up to it (running find/sed on an absolute path over-indents).
+ftree() {
+    local dir="${1:-.}" depth="${2:-2}"
+    ( cd "$dir" 2>/dev/null || exit 1
+      basename "$PWD"
+      find . -mindepth 1 -maxdepth "$depth" 2>/dev/null \
+          | sed -e 's;[^/]*/;|__;g;s;__|; |;g'
+    )
+}
