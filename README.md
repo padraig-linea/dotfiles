@@ -43,6 +43,54 @@ pattern instead:
 So: **to edit Neovim or VS Code config, always edit the file under `.chezmoitemplates/`**, never
 the wrapper files under `dot_config/` or `AppData/` — those are just plumbing.
 
+## Making changes after the initial setup
+
+chezmoi never watches for changes. Nothing moves between `$HOME` and the source directory
+until you explicitly run a command, and which direction you go depends on where you edited.
+
+**Edited a live file directly** (e.g. opened `~/.bashrc` in an editor)?
+```bash
+chezmoi add ~/.bashrc
+```
+reads the live file and overwrites its source-state copy with it. `chezmoi re-add` does this
+in bulk for every tracked file that's drifted from source, if you've made several live edits.
+
+**Edited the source directly** (e.g. `chezmoi cd`, then edit `dot_bashrc`)?
+```bash
+chezmoi apply
+```
+pushes it back out to `$HOME`.
+
+**Important exception — Neovim and VS Code settings.** These are templated (see above), so
+never edit the *deployed* file and run `chezmoi add` on it — that overwrites the one-line
+`.tmpl` wrapper with your raw file content, destroying the `{{- template ... -}}` reference and
+breaking the link between the two OS-specific copies. Always edit the canonical file under
+`.chezmoitemplates/nvim/...` or `.chezmoitemplates/vscode-settings.json` directly, then
+`chezmoi apply` to deploy it.
+
+**Already edited a live Neovim/VS Code file before realizing this?** Copy it back into its
+canonical template — since the `.tmpl` wrapper does nothing but include the template verbatim,
+the two should be identical:
+```bash
+cp ~/AppData/Local/nvim/init.lua ~/.local/share/chezmoi/.chezmoitemplates/nvim/init.lua
+# or, for VS Code:
+cp ~/AppData/Roaming/Code/User/settings.json ~/.local/share/chezmoi/.chezmoitemplates/vscode-settings.json
+```
+then `chezmoi diff` (should come back empty) to confirm. That wholesale copy can introduce a
+harmless line-ending-only diff (live files are CRLF, the template store normalizes to LF) — if
+`chezmoi apply` prompts about it afterward, it's the same non-issue seen with `lazy-lock.json`
+during the original migration, safe to overwrite. To avoid that churn entirely, use
+`chezmoi diff -- <path>` first to see exactly what you changed, and hand-apply just that edit
+to the template instead of copying the whole file.
+
+**Either way, chezmoi doesn't touch git.** Once the source state has what you want (via `add`,
+`apply`, or a direct edit):
+```bash
+chezmoi cd
+git add -A && git commit -m "..." && git push
+```
+Nothing reaches GitHub until that push happens.
+
 ## What's tracked here
 
 - `dot_bashrc`, `dot_bash_profile` — Git Bash shell config (fully portable, no OS branching needed)
