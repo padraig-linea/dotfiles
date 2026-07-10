@@ -88,6 +88,15 @@ first without changing anything, run `chezmoi diff` before `apply`.
 **4. Open a new terminal window** so the new `.bashrc` (with its eza/tree aliases) and the
 `chezmoi` binary's `PATH` entry both take effect.
 
+**On Windows specifically**, step 3's apply will try to run the `.ps1` restore scripts (nvim
+plugins, VS Code extensions) and may fail with `running scripts is disabled on this system` —
+PowerShell's default execution policy blocks unsigned local scripts. Fix with (adjust scope to
+taste; `CurrentUser` doesn't need admin):
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+then re-run `chezmoi apply --less-interactive`.
+
 ## This repo is config only — software still needs installing separately
 
 Cloning/applying this repo brings back your *settings*, not the *programs* themselves:
