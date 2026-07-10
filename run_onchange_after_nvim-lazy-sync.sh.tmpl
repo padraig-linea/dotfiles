@@ -1,0 +1,8 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/sh
+# Restores nvim's lazy.nvim plugins. Re-runs automatically whenever
+# lazy-lock.json's content changes (this comment embeds its hash so
+# chezmoi detects the change):
+# lazy-lock.json sha256sum: {{ include ".chezmoitemplates/nvim/lazy-lock.json" | sha256sum }}
+nvim --headless "+Lazy! restore" +qa
+{{- end -}}

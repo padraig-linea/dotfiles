@@ -1,11 +1,11 @@
 {{ if ne .chezmoi.os "windows" }}
 .minttyrc
 winget-packages.json
-AppData/Roaming/Code/User/settings.json
+AppData/Roaming/Code
 AppData/Local/nvim
 {{ end }}
 {{ if eq .chezmoi.os "windows" }}
-.config/Code/User/settings.json
+.config/Code
 .config/nvim
 {{ end }}
 README.md
