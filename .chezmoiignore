@@ -9,3 +9,4 @@ AppData/Local/nvim
 .config/nvim
 {{ end }}
 README.md
+CONFIGURATION.md

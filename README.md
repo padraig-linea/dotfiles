@@ -159,6 +159,7 @@ Cloning/applying this repo brings back your *settings*, not the *programs* thems
   installing something new: `winget export -o winget-packages.json --accept-source-agreements`.
   Left manual deliberately — it installs ~38 arbitrary packages (some large/interactive, e.g.
   Office, Teams), not appropriate for an unattended background script.
-- **CaskaydiaCove Nerd Font** + Windows Terminal's Git Bash profile font — machine-specific,
-  no shortcut (see `config-migration/terminal-setup.md` on the original machine if it still
-  exists).
+- **CaskaydiaCove Nerd Font** + Windows Terminal's Git Bash profile font — now automated via
+  the `run_once_after_install-nerd-font` / `run_once_after_set-gitbash-terminal-font` scripts
+  (Windows only). See `CONFIGURATION.md` for a complete manual fallback procedure and a full
+  inventory of everything this repo tracks or automates.
