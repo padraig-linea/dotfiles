@@ -1,0 +1,50 @@
+{{- if eq .chezmoi.os "windows" -}}
+# Sets the CaskaydiaCove NFM font on the Git Bash profile in Windows
+# Terminal. Only touches that one profile's font field -- everything else
+# in settings.json is left untouched. Backs up settings.json before writing,
+# and skips entirely if the font is already set correctly.
+#
+# Fails (non-zero exit) if no Git Bash profile exists yet in Windows
+# Terminal. chezmoi automatically retries a failed run_once_ script on the
+# next apply, so simply opening Windows Terminal once (so it auto-detects
+# Git for Windows and generates the profile) and re-running `chezmoi apply`
+# is enough to resolve this.
+
+$ErrorActionPreference = 'Stop'
+$wt = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+
+if (-not (Test-Path $wt)) {
+    Write-Error "Windows Terminal settings.json not found at $wt -- open Windows Terminal at least once, then re-run 'chezmoi apply'."
+    exit 1
+}
+
+$json = Get-Content $wt -Raw | ConvertFrom-Json
+$candidates = @($json.profiles.list | Where-Object {
+    $_.name -like '*Git Bash*' -or $_.commandline -like '*git-bash*' -or $_.commandline -like '*bash.exe*'
+})
+
+if ($candidates.Count -eq 0) {
+    Write-Error "No Git Bash profile found in Windows Terminal yet -- open/restart Windows Terminal so it can auto-detect Git for Windows, then re-run 'chezmoi apply'."
+    exit 1
+}
+if ($candidates.Count -gt 1) {
+    Write-Warning "Multiple Git Bash-like profiles found; using the first one ($($candidates[0].name), $($candidates[0].guid))."
+}
+$gitBash = $candidates[0]
+
+if ($gitBash.font -and $gitBash.font.face -eq 'CaskaydiaCove NFM') {
+    Write-Output "Git Bash profile font is already CaskaydiaCove NFM -- nothing to do."
+    exit 0
+}
+
+$backup = "$wt.bak-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
+Copy-Item $wt $backup
+Write-Output "Backed up settings.json to $backup"
+
+$fontObj = [PSCustomObject]@{ face = 'CaskaydiaCove NFM' }
+$gitBash | Add-Member -MemberType NoteProperty -Name font -Value $fontObj -Force
+
+$out = $json | ConvertTo-Json -Depth 32
+[System.IO.File]::WriteAllText($wt, $out, (New-Object System.Text.UTF8Encoding($false)))
+Write-Output "Set Git Bash profile ($($gitBash.name)) font to CaskaydiaCove NFM."
+{{- end -}}

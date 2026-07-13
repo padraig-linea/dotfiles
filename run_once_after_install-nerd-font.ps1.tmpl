@@ -1,0 +1,45 @@
+{{- if eq .chezmoi.os "windows" -}}
+# Installs the CaskaydiaCove Nerd Font (user scope, no admin required).
+# Safe to re-run: skips the download/install entirely if the font already
+# appears to be installed.
+
+$ErrorActionPreference = 'Stop'
+$fontsDir = "$env:LOCALAPPDATA\Microsoft\Windows\Fonts"
+
+if (Get-ChildItem $fontsDir -Filter 'Caskaydia*' -ErrorAction SilentlyContinue) {
+    Write-Output "CaskaydiaCove Nerd Font already installed -- nothing to do."
+    exit 0
+}
+
+$ProgressPreference = 'SilentlyContinue'
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+$tmp = "$env:TEMP\nerdfont-chezmoi"
+New-Item -ItemType Directory -Force $tmp | Out-Null
+$zip = "$tmp\CascadiaCode.zip"
+$ext = "$tmp\CascadiaCode"
+
+Write-Output "Downloading CaskaydiaCove Nerd Font..."
+Invoke-WebRequest -Uri 'https://github.com/ryanoasis/nerd-fonts/releases/latest/download/CascadiaCode.zip' -OutFile $zip
+Expand-Archive -Path $zip -DestinationPath $ext -Force
+
+New-Item -ItemType Directory -Force $fontsDir | Out-Null
+$regPath = 'HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Fonts'
+Add-Type @"
+using System; using System.Runtime.InteropServices;
+public class NativeFontsChezmoi { [DllImport("gdi32.dll")] public static extern int AddFontResource(string p); }
+"@
+foreach ($f in Get-ChildItem $ext -Recurse -Filter '*.ttf') {
+    $dest = Join-Path $fontsDir $f.Name
+    Copy-Item $f.FullName $dest -Force
+    [void][NativeFontsChezmoi]::AddFontResource($dest)
+    New-ItemProperty -Path $regPath -Name "$($f.BaseName) (TrueType)" -Value $dest -PropertyType String -Force | Out-Null
+}
+Remove-Item -Recurse -Force $tmp -ErrorAction SilentlyContinue
+
+# Deliberately NOT broadcasting WM_FONTCHANGE synchronously here -- doing so
+# to HWND_BROADCAST can hang indefinitely if any open window is unresponsive
+# (this happened during the original manual setup). Restarting apps (or the
+# terminal) picks up the font instead.
+Write-Output "CaskaydiaCove Nerd Font installed. Restart apps (or the terminal) to pick it up."
+{{- end -}}
