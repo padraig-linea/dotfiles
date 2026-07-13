@@ -10,3 +10,4 @@ AppData/Local/nvim
 {{ end }}
 README.md
 CONFIGURATION.md
+export-claude-memory.sh
