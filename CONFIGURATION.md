@@ -13,6 +13,8 @@ some things are repeated from there for that reason.
 | Source | Deployed to | Notes |
 |---|---|---|
 | `dot_bashrc`, `dot_bash_profile` | `~/.bashrc`, `~/.bash_profile` | Git Bash shell config. Fully portable, no OS branching. |
+| `dot_gitconfig` | `~/.gitconfig` | Global git identity (`user.name`, `user.email`). Plain text, no secrets, portable as-is. |
+| `dot_ssh/config` | `~/.ssh/config` | SSH client host aliases/settings — **never** keys or secrets. Started empty (with a comment-only template) on 2026-07-13; add host entries as you create them, then `chezmoi add ~/.ssh/config` + commit to capture them. |
 | `dot_minttyrc` | `~/.minttyrc` | mintty (Git Bash's bundled terminal) font config: `Font=CaskaydiaCove NFM`. Windows/Git-Bash-only — excluded on Linux via `.chezmoiignore`. This is *already* automated; see §4 for why the font install itself isn't covered by this one file. |
 | `dot_vscode/extensions.txt` | `~/.vscode/extensions.txt` | List of VS Code extension IDs (`code --list-extensions` output). Portable, no branching. |
 | `winget-packages.json` | `~/winget-packages.json` | `winget export` output — Windows-installed software list. Windows-only; excluded on Linux. |

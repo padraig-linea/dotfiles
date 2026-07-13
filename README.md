@@ -94,6 +94,8 @@ Nothing reaches GitHub until that push happens.
 ## What's tracked here
 
 - `dot_bashrc`, `dot_bash_profile` — Git Bash shell config (fully portable, no OS branching needed)
+- `dot_gitconfig` — global git identity (name/email)
+- `dot_ssh/config` — SSH host aliases/settings only, never keys (started empty — see `CONFIGURATION.md`)
 - `dot_minttyrc` — mintty font config. Windows/Git-Bash-only; excluded on Linux via `.chezmoiignore`
 - `dot_vscode/extensions.txt` — list of installed VS Code extension IDs (portable, no branching)
 - `winget-packages.json` — list of winget-installed software (like `pip freeze`, but for

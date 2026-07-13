@@ -1,0 +1,6 @@
+# SSH client config. Host aliases/settings only -- never put keys or
+# secrets in this file. Example:
+#
+# Host github.com
+#     User git
+#     IdentityFile ~/.ssh/id_ed25519
