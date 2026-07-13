@@ -99,6 +99,10 @@ Nothing reaches GitHub until that push happens.
 - `winget-packages.json` — list of winget-installed software (like `pip freeze`, but for
   winget). Windows-only concept; excluded on Linux via `.chezmoiignore`
 - `.chezmoitemplates/vscode-settings.json` + its two `.tmpl` wrappers — VS Code user settings
+- `dot_claude/settings.json`, `dot_claude/statusline-command.sh` — Claude Code global settings
+  and statusline script. `~/.claude/` is the same path on every OS, so no templating needed —
+  see `CONFIGURATION.md` for what's deliberately excluded from `~/.claude/` (credentials,
+  session history, caches, org-managed policy)
 - `.chezmoitemplates/nvim/` (10 files) + its 20 `.tmpl` wrappers — Neovim config, built
   specifically to back the `asvetliakov/vscode-neovim` VS Code extension
 
