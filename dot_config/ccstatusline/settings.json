@@ -1,0 +1,103 @@
+{
+  "version": 3,
+  "lines": [
+    [
+      {
+        "id": "1",
+        "type": "model",
+        "color": "cyan",
+        "excludeFromAutoAlign": true
+      },
+      {
+        "id": "020d10db-1da9-47bb-8aa6-0cccba38bdac",
+        "type": "thinking-effort",
+        "backgroundColor": "bgBlue"
+      },
+      {
+        "id": "2e147ba8-248d-434f-a757-3c4befd64038",
+        "type": "context-bar",
+        "backgroundColor": "bgBrightBlack"
+      }
+    ],
+    [
+      {
+        "id": "d3302b7e-a9bc-4d02-adaa-270cb19e4b90",
+        "type": "session-usage",
+        "backgroundColor": "bgBrightMagenta"
+      },
+      {
+        "id": "c41a210d-c0fd-4580-af66-6ab2b71f07ab",
+        "type": "reset-timer",
+        "backgroundColor": "bgBrightWhite",
+        "excludeFromAutoAlign": true,
+        "metadata": {
+          "display": "slider"
+        }
+      },
+      {
+        "id": "1dc3d1e8-4502-45b5-a8b0-144c90f3fdf4",
+        "type": "reset-timer",
+        "backgroundColor": "bgBrightCyan",
+        "excludeFromAutoAlign": true
+      },
+      {
+        "id": "cb0be5f4-2fca-4423-996a-57551410d9dc",
+        "type": "weekly-opus-usage",
+        "backgroundColor": "bgBrightCyan"
+      },
+      {
+        "id": "ed6f2845-6667-47e1-b945-3e76f0c16587",
+        "type": "weekly-reset-timer",
+        "backgroundColor": "bgBrightMagenta"
+      }
+    ],
+    [
+      {
+        "id": "513124f2-132d-42e8-ab1b-91319a65c6ec",
+        "type": "git-branch",
+        "backgroundColor": "bgBrightWhite",
+        "excludeFromAutoAlign": true
+      },
+      {
+        "id": "9335381f-ccda-4c63-ab6f-22bc6b7c2bc4",
+        "type": "git-changes",
+        "backgroundColor": "bgCyan"
+      },
+      {
+        "id": "c160871a-86cc-47c8-95e7-2d9a7de3ea6d",
+        "type": "current-working-dir",
+        "backgroundColor": "bgBlue"
+      }
+    ]
+  ],
+  "flexMode": "full-minus-40",
+  "compactThreshold": 60,
+  "colorLevel": 2,
+  "defaultPadding": " ",
+  "inheritSeparatorColors": false,
+  "globalBold": false,
+  "gitCacheTtlSeconds": 5,
+  "minimalistMode": false,
+  "powerline": {
+    "enabled": true,
+    "separators": [
+      ""
+    ],
+    "separatorInvertBackground": [
+      false
+    ],
+    "startCaps": [
+      ""
+    ],
+    "endCaps": [
+      ""
+    ],
+    "theme": "catppuccin",
+    "autoAlign": true,
+    "continueThemeAcrossLines": true
+  },
+  "installation": {
+    "method": "auto-update",
+    "packageManager": "npm"
+  }
+}
