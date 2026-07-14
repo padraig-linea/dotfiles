@@ -1,11 +1,13 @@
 {
-  "model": "opus",
-  "effortLevel": "xhigh",
+  "model": "sonnet",
+  "statusLine": {
+    "type": "command",
+    "command": "npx -y ccstatusline@latest",
+    "padding": 0,
+    "refreshInterval": 10
+  },
   "tui": "fullscreen",
   "theme": "auto",
   "editorMode": "vim",
-  "statusLine": {
-    "type": "command",
-    "command": "bash ~/.claude/statusline-command.sh"
-  }
+  "effortLevel": "xhigh"
 }
