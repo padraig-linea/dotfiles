@@ -4,3 +4,9 @@
 # Host github.com
 #     User git
 #     IdentityFile ~/.ssh/id_ed25519
+
+Host github.com-personal
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/gh_personal
+    IdentitiesOnly yes

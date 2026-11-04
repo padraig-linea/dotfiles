@@ -29,8 +29,9 @@ unset env
 alias gap="git apply"
 alias glo="git log --oneline"
 alias glg="git log"
-alias glo9="git log --oneline -9"
-alias glf="git log --pretty=full -9"
+alias glp="git log --oneline --graph --decorate --branches"
+alias glo9="git log --oneline --graph --decorate -9"
+alias glf="git log --pretty=medium --graph --decorate --branches"
 alias gst="git status"
 alias gau="git add -u"
 alias gbr="git branch"
@@ -38,6 +39,7 @@ alias gco="git checkout"
 alias gdf="git difftool"
 alias gdfs="git diff --staged"
 alias gdfno="git diff --name-only"
+gdt() { git difftool "$@" &> /tmp/difftool.log & disown; }
 alias gfat="git fetch --all --tags"
 alias gcs="git commit -s"
 alias gca="git commit --amend"
@@ -51,6 +53,35 @@ alias gsl="git stash list"
 alias gfo="git fetch origin"
 alias gtg="git tag"
 alias grs="git restore --staged"
+
+
+# Linea Related
+# ApplyDevEdits.cmd uses relative paths (BuildTools\...), so run ade from a WhiteChip checkout root
+# --nopause must come first: the .cmd only checks %1 when deciding whether to pause
+alias ade="./ApplyDevEdits.cmd --nopause -l PADRAIG"
+# Subshell keeps the cd local, so the calling shell stays in its current directory
+alias uos="(cd /c/Projects/Onion/OnionStatus && ./_RunMeAfterCloneOrPull.cmd)"
+
+
+# Added by Patrick
+# Bash alias to run .ps1 Powershell scripts from bash
+# NOTE: Uses Powershell 7 - not the native Windows install (Powershell 5.1)
+psrun() {
+  if [ $# -eq 0 ]; then
+    echo "usage: psrun <script.ps1> [args...]" >&2
+    return 2
+  fi
+
+  local script="$1"; shift
+  if command -v cygpath >/dev/null 2>&1; then
+    script="$(cygpath -w "$script")"
+  elif command -v wslpath >/dev/null 2>&1; then
+    script="$(wslpath -w "$script")"
+  fi
+
+  MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL='*' \
+    pwsh.exe -NoProfile -ExecutionPolicy Bypass -File "$script" "$@"
+}
 
 
 # Added by Claude — navigation, listing & conveniences (2026-06-24)

@@ -1,13 +1,109 @@
 {
-  "model": "sonnet",
+  "model": "opus",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"$(cygpath -w ~/.claude/hooks/notify.ps1)\" >/dev/null 2>&1",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "permission_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"$(cygpath -w ~/.claude/hooks/notify.ps1)\" >/dev/null 2>&1",
+            "async": true
+          }
+        ]
+      },
+      {
+        "matcher": "idle_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"$(cygpath -w ~/.claude/hooks/notify.ps1)\" >/dev/null 2>&1",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "ExitPlanMode",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$HOME/.claude/hooks/plan_to_html.py\""
+          }
+        ]
+      }
+    ]
+  },
   "statusLine": {
     "type": "command",
     "command": "npx -y ccstatusline@latest",
     "padding": 0,
     "refreshInterval": 10
   },
+  "outputStyle": "Concise",
+  "effortLevel": "xhigh",
+  "modelSettings": {
+    "claude-opus-5": {
+      "effortLevel": "xhigh"
+    },
+    "claude-fable-5-1": {
+      "effortLevel": "xhigh"
+    },
+    "claude-sonnet-5": {
+      "effortLevel": "xhigh"
+    },
+    "claude-opus-5-5": {
+      "effortLevel": "xhigh"
+    }
+  },
+  "plansDirectory": "./plans",
   "tui": "fullscreen",
   "theme": "auto",
   "editorMode": "vim",
-  "effortLevel": "xhigh"
+  "autoMode": {
+    "soft_deny": [
+      "$defaults",
+      "Bash(RunProvisioner.py:*production*)",
+      "Bash(python RunProvisioner.py -l -f)"
+    ],
+    "environment": [
+      "### Org-wide",
+      "**Organization**: Focusrite Group / Linea Research (GitHub org: FocusriteGroup)",
+      "**Cloud provider(s)**: None configured",
+      "**Repository visibility**: Private — FocusriteGroup/Linea-Onion-WhiteChip (confirmed via gh)",
+      "**Internal sharing / snippet hosting**: SharePoint (focusritegroup-my.sharepoint.com) referenced in README for docs — not a code-snippet host; treat public paste/gist services as outside the trust boundary",
+      "**Secrets management**: None configured",
+      "**Default / protected branches**: `develop` (default), protected branches: `develop`, `main` (no rulesets listed — classic branch protection in effect)",
+      "**CI/CD deploy targets**: Jenkins (in-repo Jenkins/ automation, nightly builds) — no external deploy target configured",
+      "**Network posture**: None configured",
+      "**Host containment**: None configured — assume Claude Code runs on an ordinary developer machine with open internet (Windows dev box per repo paths, e.g. C:\\Projects\\...)",
+      "**Source control**: The trusted repo (FocusriteGroup/Linea-Onion-WhiteChip) and its origin remote only — no additional orgs configured",
+      "**Trusted internal domains**: github.com/FocusriteGroup (this repo's remote host/org), focusritegroup-my.sharepoint.com (docs only, read reference)",
+      "**Trusted cloud buckets**: None configured",
+      "**Key internal services**: None configured",
+      "**Internal package registry**: None configured",
+      "**Sensitive data locations & audiences**: Board provisioning / security key material under Board/Provisioning/ (e.g. Signature/ CST tooling, SRK tools in src/Provisioning/) — share only with cleared Linea Research firmware/security engineers; C:\\Projects\\CodingStandards (internal dev standard, not public)",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
+      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
+      "### User-specific",
+      "**Primary use of Claude Code**: embedded firmware development (NXP RT1021, FreeRTOS, DSP/audio) for the WhiteChip project",
+      "**Trusted repo**: C:\\Projects\\onion\\WhiteChip2, remote origin github.com:FocusriteGroup/Linea-Onion-WhiteChip.git (private)",
+      "**Org-specific CLIs**: None configured",
+      "routine under C:\\Projects\\onion\\WhiteChip2\\ prefix: build, test, and provisioning scripts (BuildTools/Build.py, RunProvisioner.py, etc.) within this checkout"
+    ]
+  }
 }
