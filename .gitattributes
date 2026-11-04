@@ -1,0 +1,4 @@
+# Store and check out every text file with LF line endings, on every OS.
+# Overrides core.autocrlf=true from the Git for Windows system config, which
+# otherwise checks files out as CRLF and chezmoi then deploys them that way.
+* text=auto eol=lf

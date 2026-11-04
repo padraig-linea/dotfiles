@@ -11,3 +11,5 @@ AppData/Local/nvim
 README.md
 CONFIGURATION.md
 export-claude-memory.sh
+claude-memory-export-*
+chezmoi_claude_transcript.txt

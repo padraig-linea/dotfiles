@@ -1,0 +1,4 @@
+# Local-only files that must never be committed. .chezmoiignore also
+# stops chezmoi deploying them to the home directory.
+chezmoi_claude_transcript.txt
+claude-memory-export-*/
