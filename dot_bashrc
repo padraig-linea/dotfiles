@@ -184,7 +184,11 @@ case $- in *i*)
             printf '      chezmoi diff                 show the differences before deciding\n'
             printf '      chezmoi apply ~/<path>...    the reverse: overwrite ~ from the repo (repo wins)\n'
             printf 'Note: re-add skips .tmpl files (nvim, VS Code settings). Copy those into .chezmoitemplates/ instead.\n'
-            printf '      Then commit in the repo: chezmoi cd\n\n'
+            printf 'Then commit and push (works from any directory):\n'
+            printf '      chezmoi git -- status                 list changed files by their repo names (e.g. dot_bashrc)\n'
+            printf '      chezmoi git -- add <repo-path>...\n'
+            printf '      chezmoi git -- commit -m "<message>"\n'
+            printf '      chezmoi git -- push\n\n'
         fi
         if [ -n "$_cz_scripts" ]; then
             printf '\n\033[33mchezmoi: scripts queued to run (content they watch has changed)\033[0m\n%s\n' "$_cz_scripts"

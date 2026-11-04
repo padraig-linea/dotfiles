@@ -105,5 +105,6 @@
       "**Org-specific CLIs**: None configured",
       "routine under C:\\Projects\\onion\\WhiteChip2\\ prefix: build, test, and provisioning scripts (BuildTools/Build.py, RunProvisioner.py, etc.) within this checkout"
     ]
-  }
+  },
+  "inputNeededNotifEnabled": true
 }
