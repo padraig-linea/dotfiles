@@ -152,3 +152,45 @@ ftree() {
           | sed -e 's;[^/]*/;|__;g;s;__|; |;g'
     )
 }
+
+
+# --- chezmoi drift check (added 2026-11-03, split by type 2026-11-04) ---
+# On every interactive shell start, warn if any chezmoi-managed file in ~ differs
+# from the source repo (~/.local/share/chezmoi), or if any run_ script is queued.
+# `chezmoi status` columns:
+#   first  = changed since chezmoi last wrote it
+#   second = differs from what the repo would write
+#   A = would be created, M = modified, D = would be deleted, R = script will run
+# Files and queued scripts are reported separately, each with its own fix.
+# Only runs in interactive shells ($- contains "i"), so scripts are unaffected.
+case $- in *i*)
+    if command -v chezmoi >/dev/null 2>&1; then
+        if ! _cz_status=$(chezmoi status 2>&1); then
+            printf '\n\033[31mchezmoi status failed:\033[0m\n%s\n\n' "$_cz_status"
+            _cz_status=
+        fi
+        _cz_files= _cz_scripts=
+        while IFS= read -r _cz_line; do
+            case $_cz_line in
+                ?R\ *) _cz_scripts+="$_cz_line"$'\n' ;;
+                ?*)    _cz_files+="$_cz_line"$'\n' ;;
+            esac
+        done <<< "$_cz_status"
+        if [ -n "$_cz_files" ]; then
+            printf '\n\033[33mchezmoi: managed files differ from the repo\033[0m\n%s\n' "$_cz_files"
+            printf 'Fix:  chezmoi re-add               copy ALL drifted files from ~ into the repo (~ wins)\n'
+            printf '      chezmoi re-add ~/<path>...   same, but only the named file(s); works from any directory\n'
+            printf '      chezmoi re-add -n -v         dry run: show what would be re-added, change nothing\n'
+            printf '      chezmoi diff                 show the differences before deciding\n'
+            printf '      chezmoi apply ~/<path>...    the reverse: overwrite ~ from the repo (repo wins)\n'
+            printf 'Note: re-add skips .tmpl files (nvim, VS Code settings). Copy those into .chezmoitemplates/ instead.\n'
+            printf '      Then commit in the repo: chezmoi cd\n\n'
+        fi
+        if [ -n "$_cz_scripts" ]; then
+            printf '\n\033[33mchezmoi: scripts queued to run (content they watch has changed)\033[0m\n%s\n' "$_cz_scripts"
+            printf 'Fix:  chezmoi apply --include=scripts   run only the queued scripts, change no files\n\n'
+        fi
+        unset _cz_status _cz_files _cz_scripts _cz_line
+    fi
+    ;;
+esac
