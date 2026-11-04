@@ -3,6 +3,7 @@
 winget-packages.json
 AppData/Roaming/Code
 AppData/Local/nvim
+AppData/Local/Packages
 {{ end }}
 {{ if eq .chezmoi.os "windows" }}
 .config/Code
@@ -13,3 +14,4 @@ CONFIGURATION.md
 export-claude-memory.sh
 claude-memory-export-*
 chezmoi_claude_transcript.txt
+.claude/hooks/__pycache__

@@ -23,6 +23,11 @@ some things are repeated from there for that reason.
 | `dot_claude/settings.json` | `~/.claude/settings.json` | Claude Code global settings (model, effort level, TUI mode, theme, editor mode). `statusLine.command` runs `npx -y ccstatusline@latest`, styled by the file below. `~/.claude/` is Claude Code's own convention on every OS — unlike VS Code/Neovim it doesn't split by Windows-AppData vs. Linux-XDG, so no templating is needed here. |
 | `dot_config/ccstatusline/settings.json` | `~/.config/ccstatusline/settings.json` | ccstatusline's own config (line/segment layout, colors, powerline theme). ccstatusline is an npm CLI tool that always resolves to `~/.config/ccstatusline` regardless of OS (no XDG/AppData split), so no templating needed. The tool itself isn't installed persistently — `npx -y ccstatusline@latest` fetches/caches it on each run; only the Node.js runtime it needs is tracked (via `winget-packages.json`, `OpenJS.NodeJS.LTS`). To reconfigure by hand (change segments/colors/layout), run `npx ccstatusline@latest` directly in a terminal — it launches an interactive TUI configurator and overwrites this file; re-run `chezmoi add ~/.config/ccstatusline/settings.json` afterwards to pull the change back into this repo. Caveat: `npx` always fetches the latest ccstatusline, unpinned, so a future version could in principle change its settings schema in a way an old tracked file doesn't match — if that happens, just re-run the configurator to regenerate it. |
 | `dot_claude/statusline-command.sh` | `~/.claude/statusline-command.sh` | Superseded by ccstatusline above (`settings.json` no longer references it) — kept tracked as a portable-bash fallback statusline (needs `jq` on `PATH`) in case ccstatusline is ever removed. Not currently invoked. |
+| `dot_claude/CLAUDE.md` | `~/.claude/CLAUDE.md` | Claude Code global instructions (communication and writing-style preferences, git rules). Plain markdown, portable. |
+| `dot_claude/commands/pulse.md` | `~/.claude/commands/pulse.md` | Claude Code custom slash command (`/pulse`, configures the claude-pulse status bar). Add further `~/.claude/commands/*.md` files with `chezmoi add` as you create them. |
+| `dot_claude/hooks/` | `~/.claude/hooks/` | Claude Code hook scripts. `dot_claude/settings.json` calls them, so they must exist wherever that file is deployed. `notify.ps1` shows a Windows toast and plays a sound when Claude stops, needs permission, or goes idle. It runs through `powershell.exe`, so it only works on Windows. `plan_to_html.py` writes an HTML copy of each plan when Claude exits plan mode. It needs `python` on `PATH`; `pip install markdown` gives better rendering. `sounds/bell-triple.wav` is the sound `notify.ps1` plays on Stop. `sounds/make-bells.js` regenerates it, plus four other bells, with `node make-bells.js <output-dir>`. `.chezmoiignore` excludes `__pycache__`. |
+| `dot_config/git/ignore` | `~/.config/git/ignore` | Global gitignore — git's default `core.excludesFile` location on every OS, so no `.gitconfig` entry is needed to point at it. |
+| `AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json` | `~/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json` | Windows Terminal settings: profiles, fonts, keybindings, colour scheme, default profile. Windows-only; excluded on Linux. Tracked verbatim — the Git Bash profile is a static, user-defined entry with a fixed GUID, and Windows Terminal generates its built-in/dynamic profile GUIDs deterministically, so the whole file ports between machines. Windows Terminal rewrites this file whenever you change a setting in its UI; run `chezmoi re-add` on it afterwards to capture the change. The Git Bash profile's `startingDirectory` is `C:\Projects\Onion` — edit it if a machine doesn't have that path. Only valid for the Store/MSIX install of Windows Terminal; an unpackaged install keeps its settings elsewhere. |
 
 ## 2. Configurations applied via automation scripts
 
@@ -35,12 +40,10 @@ the previous run failed.
 | `run_onchange_after_nvim-lazy-sync.{sh,ps1}.tmpl` | onchange, OS-gated | Runs `nvim --headless "+Lazy! restore" +qa` to (re)install lazy.nvim's plugins at the versions pinned in `lazy-lock.json`. Re-triggers whenever that file's content changes. |
 | `run_onchange_after_vscode-extensions-sync.{sh,ps1}.tmpl` | onchange, OS-gated | Installs every extension listed in `dot_vscode/extensions.txt` via `code --install-extension`. Re-triggers whenever that file's content changes. |
 | `run_once_after_install-nerd-font.ps1.tmpl` | once, Windows-only | Downloads and installs the CaskaydiaCove Nerd Font at user scope (see §4 for exactly what this does — it's the scripted version of that same procedure). Skips itself if the font already appears installed. |
-| `run_once_after_set-gitbash-terminal-font.ps1.tmpl` | once, Windows-only | Finds the Git Bash profile in Windows Terminal's `settings.json` (by name/commandline, since its GUID differs per machine) and sets its `font.face` to `CaskaydiaCove NFM`. Only touches that one field on that one profile. Backs up `settings.json` first. Fails loudly (and gets automatically retried on the next apply) if no Git Bash profile exists yet — e.g. on a machine where Windows Terminal hasn't been opened once yet to auto-detect Git for Windows. |
 
-Execution order between the two font scripts matters (font must exist before a profile can
-usefully reference it) — both are named so alphabetical script ordering runs
-`install-nerd-font` before `set-gitbash-terminal-font` without needing explicit `before_`/`after_`
-attributes.
+Windows Terminal's Git Bash profile font used to be set by a separate `run_once_` script.
+That script was removed on 2026-11-03 when `settings.json` itself became tracked (§1): a script
+editing a chezmoi-managed file would be reverted on the next `chezmoi apply`.
 
 ## 3. Deliberately NOT tracked or automated at all
 
@@ -50,7 +53,7 @@ attributes.
 | Neovim plugin data (`nvim-data`) | Just downloaded plugin code, rebuilt automatically from `lazy-lock.json` (§2) — committing it would be dead weight. |
 | VS Code caches/session state (`globalStorage`, `History`, `workspaceStorage`, etc.) | Internal state, not real config. |
 | Actually **installing** winget packages | `winget-packages.json` is tracked as data (§1), but running `winget import` is left manual — it installs ~38 arbitrary packages, some large/interactive (Office, Teams), which isn't appropriate for an unattended background script. Restore with: `winget import -i winget-packages.json --ignore-unavailable`. |
-| Windows Terminal's `settings.json` as a whole | Only the Git Bash profile's font field is touched (§2), surgically, by script. The rest of the file is never tracked or overwritten — profile GUIDs and other settings differ per machine, so deploying the whole file would risk clobbering things a given machine already has. |
+| `~/.claude/skills/` | Contains only `synced/` (skills pushed from the claude.ai organisation, stored under opaque bucket IDs) and `.trash/`. Both are managed by Claude Code itself and re-synced on a new machine after login. If you ever write a skill by hand, `chezmoi add` that one directory. |
 | `~/.claude/.credentials.json` | OAuth/auth credentials — a secret, same category as SSH keys. Never tracked. |
 | `~/.claude/history.jsonl`, session transcripts under `~/.claude/projects/<project>/*.jsonl` | Internal formats that change between Claude Code versions — not meant to be parsed/moved directly, and not real "configuration." Use Claude Code's own `/export` command to save a specific session as a readable file if you want to keep/move one. |
 | `~/.claude.json` | Global app state, including OAuth session tokens and per-project trust decisions. Tokens are machine/session-specific and won't work if copied to a new machine — re-authenticate there instead (`claude auth login` or equivalent). |
@@ -58,7 +61,7 @@ attributes.
 
 ## 4. Manual procedure: reinstalling the CaskaydiaCove Nerd Font
 
-The two scripts in §2 automate everything below. This section exists as a complete,
+The `install-nerd-font` script in §2 automates §4.1 below. This section exists as a complete,
 standalone fallback — for a machine where you'd rather not run the scripts, for manually
 verifying what they do, or for recovering if one of them fails partway through. Every step is
 a literal, copy-pasteable PowerShell command; nothing here assumes prior context beyond having
@@ -107,37 +110,13 @@ Get-ChildItem "$env:LOCALAPPDATA\Microsoft\Windows\Fonts" -Filter 'Caskaydia*' |
 This should list ~36 font files. The specific family name used everywhere in this repo is the
 abbreviated **`CaskaydiaCove NFM`** (the "Mono" variant) — not "CaskaydiaCove Nerd Font Mono".
 
-### 4.2 Point Windows Terminal's Git Bash profile at the font
+### 4.2 Windows Terminal's Git Bash profile font
 
-Windows Terminal profile GUIDs are machine-specific (they're generated per-machine when
-Windows Terminal auto-detects Git for Windows), so the profile must be found by name/commandline
-rather than by a fixed GUID:
-
-```powershell
-$wt = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
-
-# Back up first
-$backup = "$wt.bak-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
-Copy-Item $wt $backup
-
-$json = Get-Content $wt -Raw | ConvertFrom-Json
-$gitBash = $json.profiles.list | Where-Object {
-    $_.name -like '*Git Bash*' -or $_.commandline -like '*git-bash*' -or $_.commandline -like '*bash.exe*'
-} | Select-Object -First 1
-
-if (-not $gitBash) {
-    Write-Warning "No Git Bash profile found. Open Windows Terminal at least once (it auto-detects Git for Windows and creates the profile), then re-run this block."
-} else {
-    $fontObj = [PSCustomObject]@{ face = 'CaskaydiaCove NFM' }
-    $gitBash | Add-Member -MemberType NoteProperty -Name font -Value $fontObj -Force
-    $out = $json | ConvertTo-Json -Depth 32
-    [System.IO.File]::WriteAllText($wt, $out, (New-Object System.Text.UTF8Encoding($false)))
-    Write-Output "Set font on profile: $($gitBash.name)"
-}
-```
-
-If Windows Terminal hasn't been opened yet on this machine, there won't be a Git Bash profile
-to find — open it once first, then re-run the block above.
+Windows Terminal's `settings.json` is tracked whole (§1), so the Git Bash profile's font comes
+from this repo, not from a script. It is currently `Cascadia Code`. Recent releases of Cascadia
+Code (2404.23 and later, as bundled with current Windows Terminal) include the Nerd Font symbol
+set, so icons render with it. To use the font installed in §4.1 instead, change that profile's
+`font.face` to `CaskaydiaCove NFM` in the tracked `settings.json`, then run `chezmoi apply`.
 
 ### 4.3 mintty's font (direct Git Bash launches, not via Windows Terminal)
 

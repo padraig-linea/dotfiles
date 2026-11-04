@@ -1,0 +1,98 @@
+{
+    "$help": "https://aka.ms/terminal-documentation",
+    "$schema": "https://aka.ms/terminal-profiles-schema",
+    "actions": [],
+    "copyFormatting": "none",
+    "copyOnSelect": false,
+    "defaultProfile": "{881a6f90-e1dd-4b4e-9ebc-6b964c5f5166}",
+    "keybindings": 
+    [
+        {
+            "id": "Terminal.CopyToClipboard",
+            "keys": "ctrl+c"
+        },
+        {
+            "id": "Terminal.PasteFromClipboard",
+            "keys": "ctrl+v"
+        },
+        {
+            "id": "Terminal.DuplicatePaneAuto",
+            "keys": "alt+shift+d"
+        }
+    ],
+    "newTabMenu": 
+    [
+        {
+            "type": "remainingProfiles"
+        }
+    ],
+    "profiles": 
+    {
+        "defaults": 
+        {
+            "colorScheme": "One Half Light"
+        },
+        "list": 
+        [
+            {
+                "adjustIndistinguishableColors": "always",
+                "colorScheme": "Tango Light",
+                "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                "font": 
+                {
+                    "face": "Cascadia Code"
+                },
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "hidden": false,
+                "name": "Windows PowerShell",
+                "opacity": 80,
+                "useAcrylic": true
+            },
+            {
+                "commandline": "%SystemRoot%\\System32\\cmd.exe",
+                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+                "hidden": false,
+                "name": "Command Prompt"
+            },
+            {
+                "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
+                "hidden": false,
+                "name": "Azure Cloud Shell",
+                "source": "Windows.Terminal.Azure"
+            },
+            {
+                "adjustIndistinguishableColors": "always",
+                "commandline": "\"C:\\Program Files\\Git\\bin\\bash.exe\" -i -l",
+                "font": 
+                {
+                    "face": "Cascadia Code"
+                },
+                "guid": "{881a6f90-e1dd-4b4e-9ebc-6b964c5f5166}",
+                "hidden": false,
+                "icon": "C:\\Program Files\\Git\\ucrt64\\share\\git\\git-for-windows.ico",
+                "name": "Git Bash",
+                "opacity": 85,
+                "startingDirectory": "C:\\Projects\\Onion",
+                "useAcrylic": true
+            },
+            {
+                "guid": "{08e8f0a4-510e-5b1e-a360-2b049ebac076}",
+                "hidden": false,
+                "name": "Developer Command Prompt for VS 18",
+                "source": "Windows.Terminal.VisualStudio"
+            },
+            {
+                "guid": "{8eb29e20-de77-5423-99e7-3e6ca5fb1da1}",
+                "hidden": false,
+                "name": "Developer PowerShell for VS 18",
+                "source": "Windows.Terminal.VisualStudio"
+            }
+        ]
+    },
+    "schemes": [],
+    "showTabsFullscreen": false,
+    "tabWidthMode": "equal",
+    "theme": "light",
+    "themes": [],
+    "useAcrylicInTabRow": false
+}

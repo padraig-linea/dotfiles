@@ -165,7 +165,8 @@ Cloning/applying this repo brings back your *settings*, not the *programs* thems
   installing something new: `winget export -o winget-packages.json --accept-source-agreements`.
   Left manual deliberately — it installs ~38 arbitrary packages (some large/interactive, e.g.
   Office, Teams), not appropriate for an unattended background script.
-- **CaskaydiaCove Nerd Font** + Windows Terminal's Git Bash profile font — now automated via
-  the `run_once_after_install-nerd-font` / `run_once_after_set-gitbash-terminal-font` scripts
-  (Windows only). See `CONFIGURATION.md` for a complete manual fallback procedure and a full
-  inventory of everything this repo tracks or automates.
+- **CaskaydiaCove Nerd Font** — installed automatically by the `run_once_after_install-nerd-font`
+  script (Windows only). Windows Terminal's `settings.json` is tracked as a whole file, so its
+  profiles (fonts included) are deployed directly by `chezmoi apply`. See `CONFIGURATION.md`
+  for a manual fallback procedure for the font and a full inventory of everything this repo
+  tracks or automates.
