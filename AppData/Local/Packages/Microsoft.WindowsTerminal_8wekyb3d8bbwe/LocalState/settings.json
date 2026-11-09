@@ -72,7 +72,7 @@
                 "icon": "C:\\Program Files\\Git\\ucrt64\\share\\git\\git-for-windows.ico",
                 "name": "Git Bash",
                 "opacity": 85,
-                "startingDirectory": "C:\\Projects\\Onion",
+                "startingDirectory": "A:\\Projects\\Onion",
                 "useAcrylic": true
             },
             {

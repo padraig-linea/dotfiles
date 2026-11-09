@@ -95,6 +95,10 @@ if command -v eza >/dev/null 2>&1; then
     alias ll='eza -l --git --icons=auto --group-directories-first --color=auto'    # long + git status
     alias lla='eza -la --git --icons=auto --group-directories-first --color=auto'  # long + all + git
     alias lt='eza -l --sort=modified --icons=auto --group-directories-first --color=auto'  # by mtime
+    alias lsd='eza -D --icons=auto --color=auto'                                   # subdirectories only
+    alias lad='eza -aD --icons=auto --color=auto'                                  # subdirectories only, incl. hidden
+    alias lsf='eza -f --icons=auto --color=auto'                                   # files only
+    alias laf='eza -af --icons=auto --color=auto'                                  # files only, incl. hidden
     # file-type icons need a Nerd Font in your terminal (CaskaydiaCove NFM installed)
 else
     alias ls='ls --color=auto'   # colorize ls output
@@ -103,6 +107,14 @@ else
     alias ll='ls -lh'            # long form, human-readable sizes
     alias lla='ls -lha'          # long form, all files, human-readable
     alias lt='ls -lhtr'          # long form sorted by mtime (newest last)
+    # subdirectories only:  lsd [dir]   (lad [dir] includes hidden ones)
+    # files only:           lsf [dir]   (laf [dir] includes hidden ones)
+    # Functions, not aliases, because the path has to go inside the glob.
+    # nullglob stops a literal '*/' being passed to ls when nothing matches.
+    lsd() { ( cd "${1:-.}" || exit 1; shopt -s nullglob; d=(*/); [ ${#d[@]} -gt 0 ] && command ls -d --color=auto -- "${d[@]}" ); }
+    lad() { ( cd "${1:-.}" || exit 1; shopt -s nullglob dotglob; d=(*/); [ ${#d[@]} -gt 0 ] && command ls -d --color=auto -- "${d[@]}" ); }
+    lsf() { ( cd "${1:-.}" || exit 1; shopt -s nullglob; f=(); for x in *; do [ -d "$x" ] || f+=("$x"); done; [ ${#f[@]} -gt 0 ] && command ls -d --color=auto -- "${f[@]}" ); }
+    laf() { ( cd "${1:-.}" || exit 1; shopt -s nullglob dotglob; f=(); for x in *; do [ -d "$x" ] || f+=("$x"); done; [ ${#f[@]} -gt 0 ] && command ls -d --color=auto -- "${f[@]}" ); }
 fi
 
 # --- Navigation ---
