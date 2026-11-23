@@ -5,6 +5,8 @@
     "copyFormatting": "none",
     "copyOnSelect": false,
     "defaultProfile": "{881a6f90-e1dd-4b4e-9ebc-6b964c5f5166}",
+    "initialCols": 190,
+    "initialRows": 90,
     "keybindings": 
     [
         {

@@ -1,0 +1,25 @@
+{
+    "workbench.colorTheme": "Light 2026",
+    "security.workspace.trust.untrustedFiles": "open",
+    "editor.lineNumbers": "relative",
+    "editor.cursorSurroundingLines": 10,
+    "editor.cursorSurroundingLinesStyle": "all",
+    "extensions.experimental.affinity": {
+        "asvetliakov.vscode-neovim": 1
+    },
+    "workbench.activityBar.location": "top",
+    "mcuxpresso.sdks": [],
+    "memory-inspector.debugTypes": [
+        "gdb",
+        "embedded-debug",
+        "arm-debugger",
+        "gdbtarget",
+        "mcuxpresso-debug"
+    ],
+    "vscode-serial-monitor.lineEnding": "\r",
+    "memory-inspector.columns.ascii": true,
+    "memory-inspector.columns.variables": true,
+    "workbench.startupEditor": "none",
+    "update.showReleaseNotes": false,
+    "git.openRepositoryInParentFolders": "always"
+}
